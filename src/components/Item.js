@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const Item = ({ name, cost, value, numOwned, handleClick }) => {
   return (
-    <ItemWrapper>
+    <ItemWrapper onClick={() => handleClick({ cost, name })}>
       <div>
         <Name>{name}</Name>
         <p>
