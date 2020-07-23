@@ -14,13 +14,22 @@ const items = [
 ];
 
 const Game = () => {
-  // TODO: Replace this with React state!
   const [numCookies, setNumCookies] = React.useState(100);
   const [purchasedItems, setPurchasedItems] = React.useState({
     cursor: 0,
     grandma: 0,
     farm: 0,
   });
+
+  React.useEffect(() => {
+    document.title = `${numCookies} cookies - Cookie Clicker Game`;
+    // console.log("update cookies");
+
+    return () => {
+      document.title = "Cookie Clicker Game";
+      // console.log("reset");
+    };
+  }, [numCookies]);
 
   useInterval(() => {
     const calculateCookiesPerTick = ({ cursor, grandma, farm }) => {
