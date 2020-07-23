@@ -31,18 +31,33 @@ const Game = () => {
     };
   }, [numCookies]);
 
+  React.useEffect(() => {
+    console.log("onstart");
+    const handleSpaceBar = (ev) => {
+      if (ev.code === "Space") {
+        // console.log("spacebar clicked");
+        setNumCookies(numCookies + 1);
+      }
+    };
+    window.addEventListener("keydown", handleSpaceBar);
+    return () => {
+      // console.log("removed");
+      window.removeEventListener("keydown", handleSpaceBar);
+    };
+  });
+
   useInterval(() => {
     const calculateCookiesPerTick = ({ cursor, grandma, farm }) => {
-      console.log("cursor: ", cursor, "grandma: ", grandma, "farm: ", farm);
+      // console.log("cursor: ", cursor, "grandma: ", grandma, "farm: ", farm);
       return cursor + grandma * 10 + farm * 80;
     };
     const numOfGeneratedCookies = calculateCookiesPerTick(purchasedItems);
-    console.log(
-      "numCookies: ",
-      numCookies,
-      "numOfGeneratedCookies: ",
-      numOfGeneratedCookies
-    );
+    // console.log(
+    //   "numCookies: ",
+    //   numCookies,
+    //   "numOfGeneratedCookies: ",
+    //   numOfGeneratedCookies
+    // );
     setNumCookies(numCookies + numOfGeneratedCookies);
   }, 1000);
 
