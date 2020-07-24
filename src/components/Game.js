@@ -13,6 +13,31 @@ const items = [
   { id: "farm", name: "Farm", cost: 1000, value: 80 },
 ];
 
+const useKeydown = (code, callback) => {
+  React.useEffect(() => {
+    const handleKeyDown = (ev) => {
+      if (ev.code === code) {
+        ev.preventDefault();
+        callback();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  });
+};
+
+const useDocumentTitle = (title, fallbackTitle) => {
+  React.useEffect(() => {
+    document.title = title;
+
+    return () => {
+      document.title = fallbackTitle;
+    };
+  }, [title]);
+};
+
 const Game = () => {
   const [numCookies, setNumCookies] = React.useState(100);
   const [purchasedItems, setPurchasedItems] = React.useState({
@@ -21,43 +46,35 @@ const Game = () => {
     farm: 0,
   });
 
-  React.useEffect(() => {
-    document.title = `${numCookies} cookies - Cookie Clicker Game`;
-    // console.log("update cookies");
-
-    return () => {
-      document.title = "Cookie Clicker Game";
-      // console.log("reset");
-    };
-  }, [numCookies]);
-
-  React.useEffect(() => {
-    console.log("onstart");
-    const handleSpaceBar = (ev) => {
-      if (ev.code === "Space") {
-        // console.log("spacebar clicked");
-        setNumCookies(numCookies + 1);
-      }
-    };
-    window.addEventListener("keydown", handleSpaceBar);
-    return () => {
-      // console.log("removed");
-      window.removeEventListener("keydown", handleSpaceBar);
-    };
+  useKeydown("Space", () => {
+    setNumCookies(numCookies + 1);
   });
+
+  useDocumentTitle(
+    `${numCookies} cookies - Cookie Clicker Game`,
+    "Cookie Clicker Game"
+  );
+
+  // React.useEffect(() => {
+  //   console.log("onstart");
+  //   const handleSpaceBar = (ev) => {
+  //     if (ev.code === "Space") {
+  //       // console.log("spacebar clicked");
+  //       setNumCookies(numCookies + 1);
+  //     }
+  //   };
+  //   window.addEventListener("keydown", handleSpaceBar);
+  //   return () => {
+  //     // console.log("removed");
+  //     window.removeEventListener("keydown", handleSpaceBar);
+  //   };
+  // });
 
   useInterval(() => {
     const calculateCookiesPerTick = ({ cursor, grandma, farm }) => {
-      // console.log("cursor: ", cursor, "grandma: ", grandma, "farm: ", farm);
       return cursor + grandma * 10 + farm * 80;
     };
     const numOfGeneratedCookies = calculateCookiesPerTick(purchasedItems);
-    // console.log(
-    //   "numCookies: ",
-    //   numCookies,
-    //   "numOfGeneratedCookies: ",
-    //   numOfGeneratedCookies
-    // );
     setNumCookies(numCookies + numOfGeneratedCookies);
   }, 1000);
 
