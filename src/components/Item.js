@@ -1,9 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 
-const Item = ({ name, cost, value, numOwned, handleClick }) => {
+const Item = ({ name, cost, value, numOwned, handleClick, isFirst }) => {
+  const itemRef = React.useRef(null);
+  React.useEffect(() => {
+    isFirst && itemRef.current.focus();
+  }, []);
   return (
-    <ItemWrapper onClick={() => handleClick({ cost, name })}>
+    <ItemWrapper ref={itemRef} onClick={() => handleClick({ cost, name })}>
       <div>
         <Name>{name}</Name>
         <p>
@@ -19,15 +23,24 @@ const Name = styled.div`
   font-weight: bold;
   font-size: 20px;
 `;
-const ItemWrapper = styled.div`
+const ItemWrapper = styled.button`
   display: flex;
+  background-color: #222;
+  outline: none;
   justify-content: space-between;
+  border: none;
   border-bottom: 1px solid white;
   padding: 10px;
   width: 100%;
+  color: white;
 
   &:hover {
     border: 1px solid blue;
+  }
+
+  &:focus {
+    border: 1px solid white;
+    /* background-color: grey; */
   }
 `;
 

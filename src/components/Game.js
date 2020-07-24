@@ -80,7 +80,7 @@ const Game = () => {
 
       <ItemArea>
         <SectionTitle>Items:</SectionTitle>
-        {items.map((item) => {
+        {items.map((item, index) => {
           return (
             <Item
               key={item.id}
@@ -100,6 +100,7 @@ const Game = () => {
                   });
                 }
               }}
+              isFirst={index === 0}
             />
           );
         })}
