@@ -5,7 +5,7 @@ const Item = ({ name, cost, value, numOwned, handleClick, isFirst }) => {
   const itemRef = React.useRef(null);
   React.useEffect(() => {
     isFirst && itemRef.current.focus();
-  }, []);
+  }, [isFirst]);
   return (
     <ItemWrapper ref={itemRef} onClick={() => handleClick({ cost, name })}>
       <div>
