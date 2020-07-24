@@ -1,7 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 
-const Item = ({ name, cost, value, numOwned, handleClick, isFirst }) => {
+const Item = ({
+  name,
+  cost,
+  increasePerSecond,
+  increasePerClick,
+  numOwned,
+  handleClick,
+  isFirst,
+}) => {
   const itemRef = React.useRef(null);
   React.useEffect(() => {
     isFirst && itemRef.current.focus();
@@ -11,7 +19,12 @@ const Item = ({ name, cost, value, numOwned, handleClick, isFirst }) => {
       <div>
         <Name>{name}</Name>
         <p>
-          Cost: {cost} cookie(s). Produces {value} cookies/second
+          {increasePerSecond > 0 &&
+            `Cost: ${cost} cookie(s). Produces ${increasePerSecond} cookies/second`}
+        </p>
+        <p>
+          {increasePerClick > 0 &&
+            `Cost: ${cost} cookie(s). Produces ${increasePerClick} cookies/click`}
         </p>
       </div>
       <Count>{numOwned}</Count>

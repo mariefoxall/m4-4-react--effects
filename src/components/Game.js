@@ -8,9 +8,34 @@ import useInterval from "../hooks/use-interval.hook";
 import cookieSrc from "../cookie.svg";
 
 const items = [
-  { id: "cursor", name: "Cursor", cost: 10, value: 1 },
-  { id: "grandma", name: "Grandma", cost: 100, value: 10 },
-  { id: "farm", name: "Farm", cost: 1000, value: 80 },
+  {
+    id: "cursor",
+    name: "Cursor",
+    cost: 10,
+    increasePerSecond: 1,
+    increasePerClick: 0,
+  },
+  {
+    id: "grandma",
+    name: "Grandma",
+    cost: 100,
+    increasePerSecond: 10,
+    increasePerClick: 0,
+  },
+  {
+    id: "farm",
+    name: "Farm",
+    cost: 1000,
+    increasePerSecond: 80,
+    increasePerClick: 0,
+  },
+  {
+    id: "megaCursor",
+    name: "MegaCursor",
+    cost: 2000,
+    increasePerSecond: 0,
+    increasePerClick: 100,
+  },
 ];
 
 const useKeydown = (code, callback) => {
@@ -44,7 +69,22 @@ const Game = () => {
     cursor: 0,
     grandma: 0,
     farm: 0,
+    megacursor: 0,
   });
+
+  const [cookiesPerClick, setcookiesPerClick] = React.useState(1);
+
+  const useMegaCursor = (numMegaCursor) => {
+    React.useEffect(() => {
+      setcookiesPerClick(
+        cookiesPerClick + numMegaCursor * items[3].increasePerClick
+      );
+
+      return () => {
+        setcookiesPerClick(cookiesPerClick);
+      };
+    }, [numMegaCursor]);
+  };
 
   useKeydown("Space", () => {
     setNumCookies(numCookies + 1);
@@ -54,6 +94,8 @@ const Game = () => {
     `${numCookies} cookies - Cookie Clicker Game`,
     "Cookie Clicker Game"
   );
+
+  useMegaCursor(purchasedItems.megacursor);
 
   // React.useEffect(() => {
   //   console.log("onstart");
@@ -72,7 +114,11 @@ const Game = () => {
 
   useInterval(() => {
     const calculateCookiesPerTick = ({ cursor, grandma, farm }) => {
-      return cursor + grandma * 10 + farm * 80;
+      return (
+        cursor * items[0].increasePerSecond +
+        grandma * items[1].increasePerSecond +
+        farm * items[2].increasePerSecond
+      );
     };
     const numOfGeneratedCookies = calculateCookiesPerTick(purchasedItems);
     setNumCookies(numCookies + numOfGeneratedCookies);
@@ -90,7 +136,7 @@ const Game = () => {
           </strong>{" "}
           cookies per second
         </Indicator>
-        <Button onClick={() => setNumCookies(numCookies + 1)}>
+        <Button onClick={() => setNumCookies(numCookies + cookiesPerClick)}>
           <Cookie src={cookieSrc} />
         </Button>
       </GameArea>
@@ -103,7 +149,8 @@ const Game = () => {
               key={item.id}
               name={item.name}
               cost={item.cost}
-              value={item.value}
+              increasePerSecond={item.increasePerSecond}
+              increasePerClick={item.increasePerClick}
               numOwned={purchasedItems[item.name.toLowerCase()]}
               handleClick={({ cost, name }) => {
                 if (numCookies < cost) {
